@@ -21,6 +21,9 @@ namespace rbt
 
   class RBTree
   {
+  private:
+    void RotateLeft(Node *n);
+    void RotateRight(Node *n);
   };
 }
 
