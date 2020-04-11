@@ -11,7 +11,7 @@ rbt::RBTree::RBTree()
 void rbt::RBTree::RotateLeft(rbt::Node *n)
 {
   Node *nNew = n->right;
-  Node *p = n->parent;
+  Node *p = n->GetParent();
   assert(nNew != nullptr);
 
   n->right = nNew->left;
@@ -82,7 +82,8 @@ rbt::Node *rbt::RBTree::Insert(int val)
 rbt::Node *rbt::RBTree::Insert(rbt::Node *n)
 {
   InsertRecursive(root, n);
-  //InsertRepairTree(n);
+  RepairTree(n);
+
   root = n;
   while (root->GetParent())
   {
@@ -135,4 +136,70 @@ void rbt::RBTree::TraverseInOrder(Node *current)
   {
     TraverseInOrder(current->right);
   }
+}
+
+void rbt::RBTree::RepairTree(rbt::Node *n)
+{
+  if (n->GetParent() == nullptr)
+  {
+    RepairCase1(n);
+  } else if (n->GetParent()->color == BLACK)
+  {
+    RepairCase2(n);
+  } else if (n->GetUncle() != nullptr && n->GetUncle()->color == RED)
+  {
+    RepairCase3(n);
+  } else
+  {
+    RepairCase4(n);
+  }
+}
+
+void rbt::RBTree::RepairCase1(rbt::Node *n)
+{
+  n->color = BLACK;
+}
+
+void rbt::RBTree::RepairCase2(rbt::Node *n)
+{
+  // Do nothing
+}
+
+void rbt::RBTree::RepairCase3(rbt::Node *n)
+{
+  n->GetParent()->color = BLACK;
+  n->GetUncle()->color = BLACK;
+  n->GetGrandparent()->color = RED;
+  RepairTree(n->GetGrandparent());
+}
+
+void rbt::RBTree::RepairCase4(rbt::Node *n)
+{
+  Node *p = n->GetParent();
+  Node *g = n->GetGrandparent();
+
+  if (n == p->right && p == g->left)
+  {
+    RotateLeft(p);
+    n = n->left;
+  } else if (n == p->left && p == g->right)
+  {
+    RotateRight(p);
+    n = n->right;
+  }
+}
+void rbt::RBTree::RepairCase4Step2(rbt::Node *n)
+{
+  Node *p = n->GetParent();
+  Node *g = n->GetGrandparent();
+
+  if (n == p->left)
+  {
+    RotateRight(g);
+  } else
+  {
+    RotateLeft(g);
+  }
+  p->color = BLACK;
+  g->color = RED;
 }

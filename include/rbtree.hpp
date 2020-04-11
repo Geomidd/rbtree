@@ -39,6 +39,14 @@ namespace rbt
     Node *Insert(Node *n);
     void InsertRecursive(Node *current, Node *n);
 
+    void RepairTree(Node *n);
+    // Repair cases
+    void RepairCase1(Node *n);  // If node is root, set black
+    void RepairCase2(Node *n);  // If node's parent is black, do nothing
+    void RepairCase3(Node *n);  // If node's parent & uncle are black, switch to black; switch grandparent to red & repair again
+    void RepairCase4(Node *n);  // If the parent is red but uncle is black, 1) rotate to the outside and 2) then rotate grandparent the opposite direction and update colors
+    void RepairCase4Step2(Node *n);
+
     void RotateLeft(Node *n);
     void RotateRight(Node *n);
   };
