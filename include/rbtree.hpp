@@ -5,13 +5,19 @@ namespace rbt
 {
   int add(const int &a, const int &b);
 
+  enum NodeColor
+  {
+    BLACK,
+    RED
+  };
+
   struct Node
   {
-    int value;
+    int value;  // TODO: implement template/generics
     Node *parent;
     Node *left;
     Node *right;
-    bool color;  // true = black, red = false
+    NodeColor color;
 
     Node *GetParent();
     Node *GetGrandparent();
