@@ -32,6 +32,7 @@ namespace rbt
     Node *GetRoot();
     Node *Insert(int val);
     void TraverseInOrder(Node *current);
+    void Dump(Node *n, int tabs);
 
   private:
     Node *root;

@@ -131,7 +131,21 @@ void rbt::RBTree::TraverseInOrder(Node *current)
   {
     TraverseInOrder(current->left);
   }
-  std::cout << current->value << " ";
+
+  std::string dir = "";
+  int parentVal = 0;
+  if (current == root)
+    std::cout << "[";
+  else
+  {
+    dir = (current == current->GetParent()->left) ? "L" : "R";
+    parentVal = current->GetParent()->value;
+  }
+  std::cout << dir << current->value << "(" << current->color << ")" << parentVal;
+  if (current == root)
+    std::cout << "] ";
+  else
+    std::cout << " ";
   if (current->right != NULL)
   {
     TraverseInOrder(current->right);
@@ -202,4 +216,22 @@ void rbt::RBTree::RepairCase4Step2(rbt::Node *n)
   }
   p->color = BLACK;
   g->color = RED;
+}
+
+void rbt::RBTree::Dump(Node *n, int tabs)
+{
+  if (!n)
+  {
+    return;
+  }
+
+  Dump(n->left, tabs + 1);
+
+  for (int i = 0; i < tabs; ++i)
+  {
+    std::cout << "\t\t";
+  }
+  std::cout << n->value << (n->color == 0 ? "B" : "R") << std::endl;
+
+  Dump(n->right, tabs + 1);
 }
