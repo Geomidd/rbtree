@@ -24,6 +24,11 @@ TEST_CASE("Library is imported", "[library]")
   tree.Insert(10);
   tree.Insert(7);
   tree.Insert(1);
-  REQUIRE(tree.GetRoot()->value == 3);
-  tree.TraverseInOrder(tree.GetRoot());
+  tree.Insert(5);
+  tree.Insert(20);
+  tree.Insert(2);
+  tree.Insert(3);
+  tree.Insert(6);
+  REQUIRE(tree.GetRoot()->value == 4);
+  tree.Dump(tree.GetRoot(), 0);
 }
