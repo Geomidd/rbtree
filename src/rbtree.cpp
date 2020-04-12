@@ -201,6 +201,8 @@ void rbt::RBTree::RepairCase4(rbt::Node *n)
     RotateRight(p);
     n = n->right;
   }
+
+  RepairCase4Step2(n);
 }
 void rbt::RBTree::RepairCase4Step2(rbt::Node *n)
 {
