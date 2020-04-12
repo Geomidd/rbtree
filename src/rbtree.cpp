@@ -68,8 +68,6 @@ void rbt::RBTree::RotateRight(rbt::Node *n)
 
 rbt::Node *rbt::RBTree::GetRoot()
 {
-  if (root != nullptr)
-    std::cout << "Root value " << root->value << std::endl;
   return root;
 }
 
