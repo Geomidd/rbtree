@@ -42,7 +42,7 @@ if (ENABLE_FUZZING)
     add_subdirectory(test_fuzz)
 endif ()
 
-set(rbtree_SOURCES src/rbtree.cpp src/node.cpp)
+set(rbtree_SOURCES src/rbtree.cpp)
 file(GLOB rbtree_SRC
         "src/*.cpp"
         )
