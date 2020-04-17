@@ -5,22 +5,20 @@
 TEST_CASE("Library is imported", "[library]")
 {
   rbt::Node first{};
-  first.value = 5;
-  REQUIRE(first.value == 5);
+  first.key = 5;
+  REQUIRE(first.key == 5);
 
-  rbt::Node second{ 3, &first, nullptr, nullptr };
-  REQUIRE(second.value == 3);
+  rbt::Node second{ 3, &first };
+  REQUIRE(second.key == 3);
   REQUIRE(second.parent == &first);
   first.left = &second;
   REQUIRE(first.left == &second);
-  REQUIRE(first.left->value == 3);
+  REQUIRE(first.left->key == 3);
 
   rbt::RBTree tree;
-  REQUIRE(tree.GetRoot() == nullptr);
   tree.Insert(3);
   tree.Insert(2);
-  auto i3 = tree.Insert(4);
-  REQUIRE(i3->color == rbt::RED);
+  tree.Insert(4);
   tree.Insert(10);
   tree.Insert(7);
   tree.Insert(1);
@@ -29,6 +27,10 @@ TEST_CASE("Library is imported", "[library]")
   tree.Insert(2);
   tree.Insert(3);
   tree.Insert(6);
-  REQUIRE(tree.GetRoot()->value == 4);
-  tree.Dump(tree.GetRoot(), 0);
+  REQUIRE(tree.GetRoot()->key == 4);
+  tree.Dump();
+  tree.Remove(20);
+  tree.Dump();
+  tree.Remove(4);
+  tree.Dump();
 }

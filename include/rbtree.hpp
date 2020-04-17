@@ -11,43 +11,56 @@ namespace rbt
 
   struct Node
   {
-    int value;  // TODO: implement template/generics
+    int key;  // TODO: implement template/generics
     Node *parent;
+    NodeColor color;
     Node *left;
     Node *right;
-    NodeColor color;
-
-    Node *GetParent();
-    Node *GetGrandparent();
-    Node *GetSibling();
-    Node *GetUncle();
   };
 
   class RBTree
   {
   public:
     RBTree();
-    Node *GetRoot();
-    Node *Insert(int val);
+    ~RBTree();
+    const Node *GetRoot();
+    void Insert(int val);
+    void Remove(int val);
     void TraverseInOrder(Node *current);
-    void Dump(Node *n, int tabs);
+    void Dump();
 
   private:
     Node *root;
 
-    Node *Insert(Node *n);
+    // Insertion
+    void Insert(Node *n);
+    void InsertFixup(Node *n);
     void InsertRecursive(Node *current, Node *n);
-
     void RepairTree(Node *n);
-    // Repair cases
+    //// Repair cases
     void RepairCase1(Node *n);  // If node is root, set black
     void RepairCase2(Node *n);  // If node's parent is black, do nothing
     void RepairCase3(Node *n);  // If node's parent & uncle are black, switch to black; switch grandparent to red & repair again
     void RepairCase4(Node *n);  // If the parent is red but uncle is black, 1) rotate to the outside and 2) then rotate grandparent the opposite direction and update colors
     void RepairCase4Step2(Node *n);
 
-    void RotateLeft(Node *n);
+    // Deletion/removal
+    void DeleteNode(Node *n);
+    void Remove(Node *n);
+
+    Node *Find(int val);
+
+    void RotateLeft(Node *x);
     void RotateRight(Node *n);
+
+    Node *GetParent(Node *n);
+    Node *GetSibling(Node *n);
+    Node *GetUncle(Node *n);
+    Node *GetGrandparent(Node *n);
+    void Transplant(Node *dest, Node *src);
+    Node *Minimum(Node *n);
+    void RemoveFixup(Node *n, NodeColor originalColor);
+    void Dump(Node *node, int tabs);
   };
 }
 
