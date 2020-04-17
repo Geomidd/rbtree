@@ -3,8 +3,6 @@
 
 namespace rbt
 {
-  int add(const int &a, const int &b);
-
   enum NodeColor
   {
     BLACK,
