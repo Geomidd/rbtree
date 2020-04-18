@@ -362,6 +362,14 @@ namespace rbt
 
       return n->value;
     }
+    bool UpdateValue(T key, U val)
+    {
+      auto n = Find(key);
+      if (n == nullptr || n == nil) return false;
+
+      n->value = val;
+      return n->value == val;
+    }
 
     void Insert(T key, U value = U())
     {

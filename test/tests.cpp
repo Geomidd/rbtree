@@ -34,6 +34,9 @@ TEST_CASE("Library is imported", "[library]")
   tree.Insert(6, 'F');
   REQUIRE(tree.GetRoot()->key == 4);
   REQUIRE(tree.GetRoot()->value == 'D');
+  REQUIRE(tree.UpdateValue(6, 'Z') == true);
+  REQUIRE(tree.GetValueFromKey(6) == 'Z');
+  REQUIRE(tree.UpdateValue(26, '1') == false);
   tree.Dump();
   tree.Remove(20);
   tree.Dump();
