@@ -356,7 +356,7 @@ namespace rbt
       }
       return containingNode;
     }
-    U GetValueFromKey(T key)
+    [[nodiscard]] U GetValueFromKey(T key)
     {
       Node<T, U> *n = Find(key);
       if (n == nil || n == nullptr) return NULL;
