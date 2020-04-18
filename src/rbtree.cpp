@@ -1,289 +1,42 @@
-#include <cassert>
 #include <iostream>
 #include "rbtree.hpp"
 
 rbt::RBTree::RBTree()
-  : root(nullptr)
 {
-  std::cout << "Creating rbt" << std::endl;
+  nil = new Node;
+  nil->key = 0;
+  nil->left = nullptr;
+  nil->right = nullptr;
+  nil->parent = nullptr;
+  root = nil;
 }
-
-rbt::RBTree::~RBTree()
-{
-  DeleteNode(root);
-}
-
-void rbt::RBTree::RotateLeft(rbt::Node *x)
-{
-  Node *y = x->right;
-  x->right = y->left;
-  if (y->left != nullptr)
-  {
-    y->left->parent = x;
-  }
-
-  y->parent = x->parent;
-
-  if (x->parent == nullptr)
-  {
-    root = y;
-  } else if (x == x->parent->left)
-  {
-    x->parent->left = y;
-  } else
-  {
-    x->parent->right = y;
-  }
-  y->left = x;
-  x->parent = y;
-}
-
-void rbt::RBTree::RotateRight(rbt::Node *y)
-{
-  Node *x = y->left;
-  y->left = x->right;
-  if (x->right != nullptr)
-  {
-    x->right->parent = y;
-  }
-
-  x->parent = y->parent;
-
-  if (y->parent == nullptr)
-  {
-    root = x;
-  } else if (y == y->parent->left)
-  {
-    y->parent->left = x;
-  } else
-  {
-    y->parent->right = x;
-  }
-  x->right = y;
-  y->parent = x;
-}
-
-const rbt::Node *rbt::RBTree::GetRoot()
+rbt::Node *rbt::RBTree::GetRoot()
 {
   return root;
 }
-
-void rbt::RBTree::Insert(int val)
+rbt::Node *rbt::RBTree::Minimum(Node *p)
 {
-  Node *newNode = new Node{ val };
-  Insert(newNode);
-}
-
-void rbt::RBTree::Insert(rbt::Node *n)
-{
-  Node *parent = nullptr;
-  Node *node = root;
-  while (node)
+  // TODO: Switch to while loop
+  if (p->left != nil)
   {
-    parent = node;
-    if (n->key < node->key)
-    {
-      node = node->left;
-    } else
-    {
-      node = node->right;
-    }
+    return Minimum(p->left);
   }
-
-  if (parent == nullptr)
+  return p;
+}
+rbt::Node *rbt::RBTree::Successor(Node *p)
+{
+  // TODO: Switch to while loop
+  if (p->right != nil)
   {
-    root = n;
-    n->color = BLACK;
-    n->parent = nullptr;
-    n->left = nullptr;
-    n->right = nullptr;
-  } else
-  {
-    n->color = RED;
-    n->parent = parent;
-    n->left = nullptr;
-    n->right = nullptr;
-
-    if (n->key < parent->key)
-    {
-      parent->left = n;
-    } else
-    {
-      parent->right = n;
-    }
+    return Minimum(p->right);
   }
-  InsertFixup(n);
-}
-
-void rbt::RBTree::InsertRecursive(rbt::Node *current, rbt::Node *n)
-{
-  if (current != nullptr)
+  Node *y = p;
+  while (y != nil && y == (y->parent)->right)
   {
-    if (n->key < current->key)
-    {
-      if (current->left != nullptr)
-      {
-        InsertRecursive(current->left, n);
-        return;
-      } else
-      {
-        current->left = n;
-      }
-    } else
-    {
-      if (current->right != nullptr)
-      {
-        InsertRecursive(current->right, n);
-        return;
-      } else
-      {
-        current->right = n;
-      }
-    }
+    y = y->parent;
   }
-
-  n->parent = current;
-  n->left = nullptr;
-  n->right = nullptr;
-  n->color = RED;
+  return (y == nil ? nil : y->parent);
 }
-
-void rbt::RBTree::TraverseInOrder(Node *current)
-{
-  if (current->left != nullptr)
-  {
-    TraverseInOrder(current->left);
-  }
-
-  std::string dir = "";
-  int parentVal = 0;
-  if (current == root)
-    std::cout << "[";
-  else
-  {
-    dir = (current == current->parent->left) ? "L" : "R";
-    parentVal = current->parent->key;
-  }
-  std::cout << dir << current->key << "(" << current->color << ")" << parentVal;
-  if (current == root)
-    std::cout << "] ";
-  else
-    std::cout << " ";
-  if (current->right != NULL)
-  {
-    TraverseInOrder(current->right);
-  }
-}
-
-void rbt::RBTree::RepairTree(rbt::Node *n)
-{
-  if (n->parent == nullptr)
-  {
-    RepairCase1(n);
-  } else if (n->parent->color == BLACK)
-  {
-    RepairCase2(n);
-  } else if (GetUncle(n) != nullptr && GetUncle(n)->color == RED)
-  {
-    RepairCase3(n);
-  } else
-  {
-    RepairCase4(n);
-  }
-}
-
-void rbt::RBTree::RepairCase1(rbt::Node *n)
-{
-  n->color = BLACK;
-}
-
-void rbt::RBTree::RepairCase2(rbt::Node *n)
-{
-  // Do nothing
-}
-
-void rbt::RBTree::RepairCase3(rbt::Node *n)
-{
-  GetParent(n)->color = BLACK;
-  GetUncle(n)->color = BLACK;
-  GetGrandparent(n)->color = RED;
-  RepairTree(GetGrandparent(n));
-}
-
-void rbt::RBTree::RepairCase4(rbt::Node *n)
-{
-  Node *p = GetParent(n);
-  Node *g = GetGrandparent(n);
-
-  if (n == p->right && p == g->left)
-  {
-    RotateLeft(p);
-    n = n->left;
-  } else if (n == p->left && p == g->right)
-  {
-    RotateRight(p);
-    n = n->right;
-  }
-
-  RepairCase4Step2(n);
-}
-void rbt::RBTree::RepairCase4Step2(rbt::Node *n)
-{
-  Node *p = GetParent(n);
-  Node *g = GetGrandparent(n);
-
-  if (n == p->left)
-  {
-    RotateRight(g);
-  } else
-  {
-    RotateLeft(g);
-  }
-  p->color = BLACK;
-  g->color = RED;
-}
-
-void rbt::RBTree::Dump(Node *n, int tabs)
-{
-  if (n == nullptr) return;
-
-  Dump(n->left, tabs + 1);
-
-  for (int i = 0; i < tabs; ++i)
-  {
-    std::cout << "\t\t";
-  }
-  std::cout << n->key << (n->color == 0 ? "B" : "R") << std::endl;
-
-  Dump(n->right, tabs + 1);
-}
-
-rbt::Node *rbt::RBTree::GetParent(Node *n)
-{
-  return n->parent == nullptr ? nullptr : n->parent;
-}
-
-rbt::Node *rbt::RBTree::GetUncle(rbt::Node *n)
-{
-  return GetSibling(GetParent(n));
-}
-
-rbt::Node *rbt::RBTree::GetSibling(Node *n)
-{
-  if (n->parent == nullptr)
-    return nullptr;
-
-  if (n == GetParent(n)->left)
-    return GetParent(n)->right;
-  else
-    return GetParent(n)->left;
-}
-
-rbt::Node *rbt::RBTree::GetGrandparent(Node *n)
-{
-  return GetParent(n) == nullptr ? nullptr : GetParent(GetParent(n));
-}
-
 rbt::Node *rbt::RBTree::Find(int val)
 {
   Node *containingNode = root;
@@ -308,184 +61,298 @@ rbt::Node *rbt::RBTree::Find(int val)
   }
   return containingNode;
 }
+void rbt::RBTree::RotateLeft(Node *p)
+{
+  Node *y = p->right;
+  y->parent = p->parent;
+
+  if (p->parent != nil)
+  {
+    if (p == (p->parent->left))
+    {
+      y->parent->left = y;
+    } else
+    {
+      y->parent->right = y;
+    }
+  } else
+  {
+    root = y;
+  }
+  p->right = y->left;
+  if (p->right != nil)
+  {
+    p->right->parent = p;
+  }
+  y->left = p;
+  p->parent = y;
+}
+void rbt::RBTree::RotateRight(Node *p)
+{
+  Node *y = p->left;
+  y->parent = p->parent;
+
+  if (p->parent != nil)
+  {
+    if (p == (p->parent->left))
+    {
+      y->parent->left = y;
+    } else
+    {
+      y->parent->right = y;
+    }
+  } else
+  {
+    root = y;
+  }
+  p->left = y->right;
+  if (p->left != nil)
+  {
+    p->left->parent = p;
+  }
+  y->right = p;
+  p->parent = y;
+}
+
+void rbt::RBTree::Insert(int val)
+{
+  Node *x = root;
+  Node *y = nil;
+  while (x != nil)
+  {
+    y = x;
+    if (x->key > val)
+    {
+      x = x->left;
+    } else
+    {
+      x = x->right;
+    }
+  }
+  Node *temp = new Node;
+  temp->key = val;
+  temp->left = nil;
+  temp->right = nil;
+  temp->parent = y;
+  temp->color = RED;
+  if (temp->parent == nil)
+  {
+    root = temp;
+  } else
+  {
+    if (val < y->key)
+    {
+      y->left = temp;
+    } else
+    {
+      y->right = temp;
+    }
+  }
+  InsertFixup(temp);
+}
+void rbt::RBTree::InsertFixup(Node *p)
+{
+  Node *z = p;
+  while (z != nil && z->parent != nil && z->parent->parent != nil && z->parent->color == RED)
+  {
+
+    if (z->parent->parent->left == z->parent)
+    {
+      if (z->parent->parent->right != nil && z->parent->parent->right->color == RED)
+      {
+        //case 1
+        z->parent->color = BLACK;
+        z->parent->parent->right->color = BLACK;
+        z = z->parent->parent;
+        z->color = RED;
+      } else
+      {
+        //case 2
+        if (z == z->parent->right)
+        {
+          RotateLeft((z = z->parent));
+        }
+        //case 3
+        z->parent->color = BLACK;
+        z->parent->parent->color = RED;
+        RotateRight(z->parent->parent);
+      }
+    }
+
+    else
+    {
+
+      if (z->parent->parent->left != nil && z->parent->parent->left->color == RED)
+      {
+        //case 1
+        z->parent->color = BLACK;
+        z->parent->parent->left->color = BLACK;
+        z = z->parent->parent;
+        z->color = RED;
+      } else
+      {
+        //case 2
+        if (z == z->parent->left) { RotateRight((z = z->parent)); }
+        //case 3
+        z->parent->color = BLACK;
+        z->parent->parent->color = RED;
+        RotateLeft(z->parent->parent);
+      }
+    }
+  }
+  root->color = BLACK;
+}
 
 void rbt::RBTree::Remove(int val)
 {
-  // TODO: Redo this based on Intro to Algorithms
   Node *n = Find(val);
-  if (n == nullptr) return;
-
-  NodeColor original = n->color;
-  Node *sub;
-  Node *old;
-  if (n->left == nullptr)
+  if (n == nullptr || n->key != val)
   {
-    sub = n->right;
-    Transplant(n, sub);
-  } else if (n->right == nullptr)
+    return;
+  }
+  Delete(n);
+}
+void rbt::RBTree::Delete(Node *p)
+{
+  Node *x = nil;
+  Node *y = nil;
+  if (p->left == nil || p->right == nil)
   {
-    sub = n->left;
-    Transplant(n, sub);
+    y = p;
   } else
   {
-    old = Minimum(n->right);
-    original = old->color;
-    sub = old->right;
+    y = Successor(p);
+  }
+  if (y->left != nil)
+  {
+    x = y->left;
+  } else
+  {
+    x = y->right;
+  }
+  x->parent = y->parent;
 
-    if (old->parent == n)
+  if (y->parent == nil)
+  {
+    root = x;
+  } else
+  {
+    if (y == y->parent->left)
     {
-      sub->parent = n;
+      x->parent->left = x;
     } else
     {
-      Transplant(old, old->right);
-      old->right = n->right;
-      old->right->parent = old;
+      x->parent->right = x;
     }
-
-    Transplant(n, old);
-    old->left = n->left;
-    old->left->parent = old;
-    old->color = n->color;
   }
-  delete n;
-
-  if (original == BLACK)
+  if (y != p)
   {
-    bool side;
-    Node *sibling;
-    while (old != root && old->color == BLACK)
+    p->key = y->key;
+  }
+  if (y->color == BLACK)
+  {
+    DeleteFixup(x);
+  }
+}
+void rbt::RBTree::DeleteFixup(Node *p)
+{
+  Node *w = nil;
+  while (p != root && p->color == BLACK)
+  {
+    if (p->parent->left == p)
     {
-      side = old == old->parent->left;
-      if (side)
+      w = p->parent->right;
+      //case 1
+      if (w->color == RED)
       {
-        sibling = old->parent->right;
+        w->color = BLACK;
+        w->parent->color = RED;
+        RotateLeft(w->parent);
+        w = p->parent->right;
       } else
       {
-        sibling = old->parent->left;
-      }
-
-      if (sibling->color == RED)
-      {
-        sibling->color = BLACK;
-        old->parent->color = RED;
-        side ? RotateLeft(old->parent) : RotateRight(old->parent);
-        sibling = side ? old->parent->right : old->parent->left;
-      }
-
-      if (sibling->left->color == BLACK && sibling->right->color == RED)
-      {
-        sibling->color = RED;
-        old = old->parent;
-      } else
-      {
-        if (BLACK == side ? sibling->right->color : sibling->left->color)
+        //case 2
+        if (w->left->color == BLACK && w->right->color == BLACK)
         {
-          sibling->color = RED;
-          if (side)
-          {
-            sibling->left->color = BLACK;
-            RotateRight(sibling);
-            sibling = old->parent->right;
-          } else
-          {
-            sibling->right->color = BLACK;
-            RotateLeft(sibling);
-            sibling = old->parent->left;
-          }
+
+          w->color = RED;
+          p = p->parent;
         }
 
-        sibling->color = old->parent->color;
-        old->parent->color = BLACK;
-        if (side)
+        else
+        {  //case 3
+          if (w->left->color == RED && w->right->color == BLACK)
+          {
+            w->color = RED;
+            w->left->color = BLACK;
+            RotateRight(w);
+            w = p->parent->right;
+          }
+          //case 4
+          w->color = p->parent->color;
+          p->parent->color = BLACK;
+          w->right->color = BLACK;
+          RotateLeft(w->parent);
+          p = root;
+        }
+      }
+    } else
+    {
+      w = p->parent->left;
+      //case 1
+      if (w->color == RED)
+      {
+        w->parent->color = RED;
+        w->color = BLACK;
+        RotateRight(p->parent);
+        w = p->parent->left;
+      } else
+      {  //case 2
+        if (w->left->color == BLACK && w->right->color == BLACK)
         {
-          sibling->left->color = BLACK;
-          RotateLeft(old->parent);
+          w->color = RED;
+          p = p->parent;
         } else
         {
-          sibling->right->color = BLACK;
-          RotateRight(old->parent);
+          //case 3
+          if (w->right->color == RED && w->left->color == BLACK)
+          {
+            w->color = RED;
+            w->right->color = BLACK;
+            RotateLeft(w);
+            w = p->parent->left;
+          }
+          //case 4
+          w->color = w->parent->color;
+          w->parent->color = BLACK;
+          w->left->color = BLACK;
+          RotateRight(w->parent);
+          p = root;
         }
-
-        old = root;
       }
     }
   }
-}
-void rbt::RBTree::Remove(rbt::Node *n)
-{
-}
-void rbt::RBTree::DeleteNode(rbt::Node *n)
-{
-  if (n == nullptr) return;
-
-  if (n->left) DeleteNode(n->left);
-  if (n->right) DeleteNode(n->right);
-  delete n;
-}
-void rbt::RBTree::InsertFixup(rbt::Node *n)
-{
-  bool side;
-  Node *uncle;
-  while (n->parent && n->parent->color == RED)
-  {
-    bool side = n->parent == n->parent->parent->left;
-    if (side)
-    {
-      uncle = n->parent->parent->right;
-    } else
-    {
-      uncle = n->parent->parent->left;
-    }
-
-    if (uncle && uncle->color == RED)
-    {
-      n->parent->color = BLACK;
-      uncle->color = BLACK;
-      n->parent->parent->color = RED;
-      n = n->parent->parent;
-    } else
-    {
-      if (n == (side ? n->parent->right : n->parent->left))
-      {
-        n = n->parent;
-        side ? RotateLeft(n) : RotateRight(n);
-      }
-
-      n->parent->color = BLACK;
-      n->parent->parent->color = RED;
-      side ? RotateRight(n->parent->parent) : RotateLeft(n->parent->parent);
-    }
-  }
-
-  root->color = BLACK;
-}
-void rbt::RBTree::Transplant(rbt::Node *dest, rbt::Node *src)
-{
-  if (dest->parent == NULL)
-  {
-    root = src;
-  } else if (dest == dest->parent->left)
-  {
-    dest->parent->left = src;
-  } else
-  {
-    dest->parent->right = src;
-  }
-
-  if (src)
-  {
-    src->parent = dest->parent;
-  }
-}
-rbt::Node *rbt::RBTree::Minimum(rbt::Node *n)
-{
-  while (n->left)
-  {
-    n = n->left;
-  }
-  return n;
+  p->color = BLACK;
 }
 void rbt::RBTree::Dump()
 {
   Dump(root, 0);
+}
+void rbt::RBTree::Dump(Node *n, int tabs)
+{
+  if (n == nullptr)
+  {
+    return;
+  }
+
+  Dump(n->left, tabs + 1);
+
+  for (int i = 0; i < tabs; ++i)
+  {
+    std::cout << "\t\t";
+  }
+  char color = n->color == 0 ? 'B' : 'R';
+  std::cout << n->key << color << std::endl;
+
+  Dump(n->right, tabs + 1);
 }

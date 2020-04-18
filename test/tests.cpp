@@ -8,7 +8,7 @@ TEST_CASE("Library is imported", "[library]")
   first.key = 5;
   REQUIRE(first.key == 5);
 
-  rbt::Node second{ 3, &first };
+  rbt::Node second{ 3, rbt::BLACK, nullptr, nullptr, &first };
   REQUIRE(second.key == 3);
   REQUIRE(second.parent == &first);
   first.left = &second;

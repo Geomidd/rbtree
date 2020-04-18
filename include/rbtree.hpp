@@ -12,56 +12,37 @@ namespace rbt
   struct Node
   {
     int key;  // TODO: implement template/generics
-    Node *parent;
     NodeColor color;
     Node *left;
     Node *right;
+    Node *parent;
   };
 
   class RBTree
   {
+  private:
+    Node *root, *nil;
+
   public:
     RBTree();
-    ~RBTree();
-    const Node *GetRoot();
-    void Insert(int val);
-    void Remove(int val);
-    void TraverseInOrder(Node *current);
-    void Dump();
 
-  private:
-    Node *root;
-
-    // Insertion
-    void Insert(Node *n);
-    void InsertFixup(Node *n);
-    void InsertRecursive(Node *current, Node *n);
-    void RepairTree(Node *n);
-    //// Repair cases
-    void RepairCase1(Node *n);  // If node is root, set black
-    void RepairCase2(Node *n);  // If node's parent is black, do nothing
-    void RepairCase3(Node *n);  // If node's parent & uncle are black, switch to black; switch grandparent to red & repair again
-    void RepairCase4(Node *n);  // If the parent is red but uncle is black, 1) rotate to the outside and 2) then rotate grandparent the opposite direction and update colors
-    void RepairCase4Step2(Node *n);
-
-    // Deletion/removal
-    void DeleteNode(Node *n);
-    void Remove(Node *n);
-
+    Node *GetRoot();
+    Node *Minimum(Node *p);
+    Node *Successor(Node *p);
     Node *Find(int val);
 
-    void RotateLeft(Node *x);
-    void RotateRight(Node *n);
+    void RotateLeft(Node *p);
+    void RotateRight(Node *p);
 
-    Node *GetParent(Node *n);
-    Node *GetSibling(Node *n);
-    Node *GetUncle(Node *n);
-    Node *GetGrandparent(Node *n);
-    void Transplant(Node *dest, Node *src);
-    Node *Minimum(Node *n);
-    void RemoveFixup(Node *n, NodeColor originalColor);
-    void Dump(Node *node, int tabs);
+    void Insert(int val);
+    void InsertFixup(Node *p);
+
+    void Remove(int val);
+    void Delete(Node *p);
+    void DeleteFixup(Node *p);
+
+    void Dump();
+    void Dump(Node *n, int tabs);
   };
 }
-
 #endif
