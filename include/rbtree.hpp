@@ -21,7 +21,8 @@ namespace rbt
   class RBTree
   {
   private:
-    Node *root, *nil;
+    Node *root;
+    Node *nil;
 
     Node *Predecessor(Node *p);
     Node *Successor(Node *p);
