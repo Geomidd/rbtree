@@ -28,6 +28,7 @@ namespace rbt
 
     Node *GetRoot();
     Node *Minimum(Node *p);
+    Node *Maximum(Node *p);
     Node *Successor(Node *p);
     Node *Find(int val);
 

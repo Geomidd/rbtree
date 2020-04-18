@@ -22,6 +22,14 @@ rbt::Node *rbt::RBTree::Minimum(Node *p)
   }
   return p;
 }
+rbt::Node *rbt::RBTree::Maximum(Node *p)
+{
+  while (p->right != nil)
+  {
+    p = p->right;
+  }
+  return p;
+}
 rbt::Node *rbt::RBTree::Successor(Node *p)
 {
   // TODO: Switch to while loop
