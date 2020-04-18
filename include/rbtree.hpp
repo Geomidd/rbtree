@@ -23,29 +23,32 @@ namespace rbt
   private:
     Node *root, *nil;
 
+    Node *Predecessor(Node *p);
+    Node *Successor(Node *p);
+
+    void RotateLeft(Node *p);
+    void RotateRight(Node *p);
+
+    void InsertFixup(Node *p);
+
+    void Delete(Node *p);
+    void DeleteFixup(Node *p);
+
+    void Dump(Node *n, int tabs);
+
   public:
     RBTree();
 
     Node *GetRoot();
     Node *Minimum(Node *p);
     Node *Maximum(Node *p);
-    Node *Predecessor(Node *p);
-    Node *Successor(Node *p);
     Node *Find(int val);
 
-    void RotateLeft(Node *p);
-    void RotateRight(Node *p);
-
     void Insert(int val);
-    void InsertFixup(Node *p);
 
     void Remove(int val);
-    void Delete(Node *p);
-    void DeleteFixup(Node *p);
 
     void Dump();
-    void Dump(Node *n, int tabs);
-
     void InOrderTraversal(Node *p);
     void PreOrderTraversal(Node *p);
     void PostOrderTraversal(Node *p);
