@@ -410,14 +410,16 @@ namespace rbt
       InsertFixup(temp);
     }
 
-    void Remove(T key)
+    U Remove(T key)
     {
       Node<T, U> *n = Find(key);
       if (n == nullptr || n->key != key)
       {
-        return;
+        return NULL;
       }
+      U val = n->value;
       Delete(n);
+      return val;
     }
 
     void Dump() { Dump(root, 0); }
