@@ -1,21 +1,22 @@
 #include <iostream>
+#include <string>
 #include <catch2/catch.hpp>
 #include <rbtree.hpp>
 
 TEST_CASE("Library is imported", "[library]")
 {
-  rbt::Node first{};
+  rbt::Node<int> first{};
   first.key = 5;
   REQUIRE(first.key == 5);
 
-  rbt::Node second{ 3, rbt::BLACK, nullptr, nullptr, &first };
+  rbt::Node<int> second{ 3, rbt::BLACK, nullptr, nullptr, &first };
   REQUIRE(second.key == 3);
   REQUIRE(second.parent == &first);
   first.left = &second;
   REQUIRE(first.left == &second);
   REQUIRE(first.left->key == 3);
 
-  rbt::RBTree tree;
+  rbt::RBTree<int> tree;
   tree.Insert(3);
   tree.Insert(2);
   tree.Insert(4);
@@ -33,4 +34,10 @@ TEST_CASE("Library is imported", "[library]")
   tree.Dump();
   tree.Remove(4);
   tree.Dump();
+
+  rbt::RBTree<std::string> stringTree;
+  stringTree.Insert("A");
+  stringTree.Insert("Apple");
+  stringTree.Insert("Bob");
+  stringTree.Dump();
 }

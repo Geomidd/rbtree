@@ -42,14 +42,8 @@ if (ENABLE_FUZZING)
     add_subdirectory(test_fuzz)
 endif ()
 
-set(rbtree_SOURCES src/rbtree.cpp)
-file(GLOB rbtree_SRC
-        "src/*.cpp"
-        )
-
-add_library(rbtree STATIC ${rbtree_SOURCES})
+add_library(rbtree INTERFACE)
 set_target_properties(rbtree PROPERTIES
-        VERSION ${PROJECT_VERSION}
         PUBLIC_HEADER include/rbtree.hpp
         )
-target_include_directories(rbtree PRIVATE ${PROJECT_SOURCE_DIR}/src PUBLIC PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(rbtree INTERFACE ${PROJECT_SOURCE_DIR}/include)
