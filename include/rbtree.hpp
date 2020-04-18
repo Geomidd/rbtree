@@ -196,6 +196,7 @@ namespace rbt
       if (y != p)
       {
         p->key = y->key;
+        p->value = y->value;
       }
       if (y->color == BLACK)
       {
