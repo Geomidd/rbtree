@@ -40,4 +40,6 @@ TEST_CASE("Library is imported", "[library]")
   stringTree.Insert("Apple");
   stringTree.Insert("Bob");
   stringTree.Dump();
+  stringTree.Remove("A");
+  stringTree.Dump();
 }
