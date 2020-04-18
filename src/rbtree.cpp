@@ -16,10 +16,9 @@ rbt::Node *rbt::RBTree::GetRoot()
 }
 rbt::Node *rbt::RBTree::Minimum(Node *p)
 {
-  // TODO: Switch to while loop
-  if (p->left != nil)
+  while (p->left != nil)
   {
-    return Minimum(p->left);
+    p = p->left;
   }
   return p;
 }
