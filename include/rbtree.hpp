@@ -9,45 +9,46 @@ namespace rbt
     RED
   };
 
-  template<class T>
+  template<class T, class U>
   struct Node
   {
-    T key;  // TODO: implement template/generics
+    T key;
+    U value;
     NodeColor color;
-    Node<T> *left;
-    Node<T> *right;
-    Node<T> *parent;
+    Node<T, U> *left;
+    Node<T, U> *right;
+    Node<T, U> *parent;
   };
 
-  template<class T>
+  template<class T, class U>
   class RBTree
   {
   private:
-    Node<T> *root;
-    Node<T> *nil;
+    Node<T, U> *root;
+    Node<T, U> *nil;
 
-    Node<T> *Predecessor(Node<T> *p)
+    Node<T, U> *Predecessor(Node<T, U> *p)
     {
       if (p->left != nil)
       {
         return Maximum(p->left);
       }
 
-      Node<T> *y = p;
+      Node<T, U> *y = p;
       while (y != nil && y == y->parent->left)
       {
         y = y->parent;
       }
       return (y == nil ? nil : y->parent);
     }
-    Node<T> *Successor(Node<T> *p)
+    Node<T, U> *Successor(Node<T, U> *p)
     {
       if (p->right != nil)
       {
         return Minimum(p->right);
       }
 
-      Node<T> *y = p;
+      Node<T, U> *y = p;
       while (y != nil && y == y->parent->right)
       {
         y = y->parent;
@@ -55,9 +56,9 @@ namespace rbt
       return (y == nil ? nil : y->parent);
     }
 
-    void RotateLeft(Node<T> *p)
+    void RotateLeft(Node<T, U> *p)
     {
-      Node<T> *y = p->right;
+      Node<T, U> *y = p->right;
       y->parent = p->parent;
 
       if (p->parent != nil)
@@ -81,9 +82,9 @@ namespace rbt
       y->left = p;
       p->parent = y;
     }
-    void RotateRight(Node<T> *p)
+    void RotateRight(Node<T, U> *p)
     {
-      Node<T> *y = p->left;
+      Node<T, U> *y = p->left;
       y->parent = p->parent;
 
       if (p->parent != nil)
@@ -108,9 +109,9 @@ namespace rbt
       p->parent = y;
     }
 
-    void InsertFixup(Node<T> *p)
+    void InsertFixup(Node<T, U> *p)
     {
-      Node<T> *z = p;
+      Node<T, U> *z = p;
       while (z != nil && z->parent != nil && z->parent->parent != nil && z->parent->color == RED)
       {
         if (z->parent->parent->left == z->parent)
@@ -159,10 +160,10 @@ namespace rbt
       root->color = BLACK;
     }
 
-    void Delete(Node<T> *p)
+    void Delete(Node<T, U> *p)
     {
-      Node<T> *x = nil;
-      Node<T> *y = nil;
+      Node<T, U> *x = nil;
+      Node<T, U> *y = nil;
       if (p->left == nil || p->right == nil)
       {
         y = p;
@@ -201,9 +202,9 @@ namespace rbt
         DeleteFixup(x);
       }
     }
-    void DeleteFixup(Node<T> *p)
+    void DeleteFixup(Node<T, U> *p)
     {
-      Node<T> *w = nil;
+      Node<T, U> *w = nil;
       while (p != root && p->color == BLACK)
       {
         if (p->parent->left == p)
@@ -282,7 +283,7 @@ namespace rbt
       p->color = BLACK;
     }
 
-    void Dump(Node<T> *n, int tabs)
+    void Dump(Node<T, U> *n, int tabs)
     {
       if (n == nullptr || n == nil)
       {
@@ -304,16 +305,17 @@ namespace rbt
   public:
     RBTree()
     {
-      nil = new Node<T>;
+      nil = new Node<T, U>;
       nil->key = T();
+      nil->value = U();
       nil->left = nullptr;
       nil->right = nullptr;
       nil->parent = nullptr;
       root = nil;
     }
 
-    Node<T> *GetRoot() { return root; }
-    Node<T> *Minimum(Node<T> *p)
+    Node<T, U> *GetRoot() { return root; }
+    Node<T, U> *Minimum(Node<T, U> *p)
     {
       while (p->left != nil)
       {
@@ -321,7 +323,7 @@ namespace rbt
       }
       return p;
     }
-    Node<T> *Maximum(Node<T> *p)
+    Node<T, U> *Maximum(Node<T, U> *p)
     {
       while (p->right != nil)
       {
@@ -329,9 +331,9 @@ namespace rbt
       }
       return p;
     }
-    Node<T> *Find(T key)
+    Node<T, U> *Find(T key)
     {
-      Node<T> *containingNode = root;
+      Node<T, U> *containingNode = root;
       while (containingNode != nullptr)
       {
         if (key < containingNode->key)
@@ -353,11 +355,18 @@ namespace rbt
       }
       return containingNode;
     }
-
-    void Insert(T key)
+    U GetValueFromKey(T key)
     {
-      Node<T> *x = root;
-      Node<T> *y = nil;
+      Node<T, U> *n = Find(key);
+      if (n == nil || n == nullptr) return NULL;
+
+      return n->value;
+    }
+
+    void Insert(T key, U value)
+    {
+      Node<T, U> *x = root;
+      Node<T, U> *y = nil;
       while (x != nil)
       {
         y = x;
@@ -369,8 +378,9 @@ namespace rbt
           x = x->right;
         }
       }
-      Node<T> *temp = new Node<T>;
+      Node<T, U> *temp = new Node<T, U>;
       temp->key = key;
+      temp->value = value;
       temp->left = nil;
       temp->right = nil;
       temp->parent = y;
@@ -393,7 +403,7 @@ namespace rbt
 
     void Remove(T key)
     {
-      Node<T> *n = Find(key);
+      Node<T, U> *n = Find(key);
       if (n == nullptr || n->key != key)
       {
         return;
@@ -402,7 +412,7 @@ namespace rbt
     }
 
     void Dump() { Dump(root, 0); }
-    void InOrderTraversal(Node<T> *p)
+    void InOrderTraversal(Node<T, U> *p)
     {
       if (p == nullptr || p == nil)
       {
@@ -412,7 +422,7 @@ namespace rbt
       std::cout << p->key << (p->color == 0 ? 'B' : 'R') << " ";
       InOrderTraversal(p->right);
     }
-    void PreOrderTraversal(Node<T> *p)
+    void PreOrderTraversal(Node<T, U> *p)
     {
       if (p == nullptr || p == nil)
       {
@@ -422,7 +432,7 @@ namespace rbt
       InOrderTraversal(p->left);
       InOrderTraversal(p->right);
     }
-    void PostOrderTraversal(Node<T> *p)
+    void PostOrderTraversal(Node<T, U> *p)
     {
       if (p == nullptr || p == nil)
       {
