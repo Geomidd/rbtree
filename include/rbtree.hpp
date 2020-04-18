@@ -329,15 +329,15 @@ namespace rbt
       }
       return p;
     }
-    Node<T> *Find(int val)
+    Node<T> *Find(T key)
     {
       Node<T> *containingNode = root;
       while (containingNode != nullptr)
       {
-        if (val < containingNode->key)
+        if (key < containingNode->key)
         {
           containingNode = containingNode->left;
-        } else if (val > containingNode->key)
+        } else if (key > containingNode->key)
         {
           containingNode = containingNode->right;
         } else
@@ -346,9 +346,9 @@ namespace rbt
         }
       }
 
-      if (containingNode == nullptr || val != containingNode->key)
+      if (containingNode == nullptr || key != containingNode->key)
       {
-        std::cout << val << " not found in tree" << std::endl;
+        std::cout << key << " not found in tree" << std::endl;
         return nullptr;
       }
       return containingNode;
