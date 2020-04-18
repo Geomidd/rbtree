@@ -48,7 +48,10 @@ TEST_CASE("Library is imported", "[library]")
   stringTree.Insert("Apple", 2);
   stringTree.Insert("Bob", 3);
   stringTree.Dump();
-  stringTree.Remove("A");
+  int valueFromKey1 = stringTree.GetValueFromKey("A");
+  REQUIRE(valueFromKey1 == 1);
+  auto removed1 = stringTree.Remove("A");
+  REQUIRE(removed1 == 1);
   stringTree.Dump();
   REQUIRE(stringTree.GetValueFromKey("Apple") == 2);
 }
