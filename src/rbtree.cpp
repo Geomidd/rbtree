@@ -30,15 +30,29 @@ rbt::Node *rbt::RBTree::Maximum(Node *p)
   }
   return p;
 }
+rbt::Node *rbt::RBTree::Predecessor(Node *p)
+{
+  if (p->left != nil)
+  {
+    return Maximum(p->left);
+  }
+
+  Node *y = p;
+  while (y != nil && y == y->parent->left)
+  {
+    y = y->parent;
+  }
+  return (y == nil ? nil : y->parent);
+}
 rbt::Node *rbt::RBTree::Successor(Node *p)
 {
-  // TODO: Switch to while loop
   if (p->right != nil)
   {
     return Minimum(p->right);
   }
+
   Node *y = p;
-  while (y != nil && y == (y->parent)->right)
+  while (y != nil && y == y->parent->right)
   {
     y = y->parent;
   }
