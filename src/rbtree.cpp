@@ -373,7 +373,37 @@ void rbt::RBTree::Dump(Node *n, int tabs)
     std::cout << "\t\t";
   }
   char color = n->color == 0 ? 'B' : 'R';
-  std::cout << n->key << color << std::endl;
+  std::cout << n->key << color << "(" << n->parent->key << ")" << std::endl;
 
   Dump(n->right, tabs + 1);
+}
+void rbt::RBTree::InOrderTraversal(Node *p)
+{
+  if (p == nullptr || p == nil)
+  {
+    return;
+  }
+  InOrderTraversal(p->left);
+  std::cout << p->key << (p->color == 0 ? 'B' : 'R') << " ";
+  InOrderTraversal(p->right);
+}
+void rbt::RBTree::PreOrderTraversal(Node *p)
+{
+  if (p == nullptr || p == nil)
+  {
+    return;
+  }
+  std::cout << p->key << (p->color == 0 ? 'B' : 'R') << " ";
+  InOrderTraversal(p->left);
+  InOrderTraversal(p->right);
+}
+void rbt::RBTree::PostOrderTraversal(Node *p)
+{
+  if (p == nullptr || p == nil)
+  {
+    return;
+  }
+  InOrderTraversal(p->left);
+  InOrderTraversal(p->right);
+  std::cout << p->key << (p->color == 0 ? 'B' : 'R') << " ";
 }

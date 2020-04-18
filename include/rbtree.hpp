@@ -45,6 +45,10 @@ namespace rbt
 
     void Dump();
     void Dump(Node *n, int tabs);
+
+    void InOrderTraversal(Node *p);
+    void PreOrderTraversal(Node *p);
+    void PostOrderTraversal(Node *p);
   };
 }
 #endif
