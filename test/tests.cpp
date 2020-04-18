@@ -24,7 +24,8 @@ TEST_CASE("Library is imported", "[library]")
   tree.Insert(2, 'B');
   tree.Insert(4, 'D');
   tree.Insert(10, 'J');
-  tree.Insert(7, 'G');
+  tree.Insert(7);
+  REQUIRE(tree.GetValueFromKey(7) == char());
   tree.Insert(1, 'A');
   tree.Insert(5, 'E');
   tree.Insert(20, 'T');

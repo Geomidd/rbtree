@@ -363,7 +363,7 @@ namespace rbt
       return n->value;
     }
 
-    void Insert(T key, U value)
+    void Insert(T key, U value = U())
     {
       Node<T, U> *x = root;
       Node<T, U> *y = nil;
