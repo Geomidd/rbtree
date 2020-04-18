@@ -361,7 +361,7 @@ void rbt::RBTree::Dump()
 }
 void rbt::RBTree::Dump(Node *n, int tabs)
 {
-  if (n == nullptr)
+  if (n == nullptr || n == nil)
   {
     return;
   }
